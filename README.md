@@ -34,5 +34,5 @@ Usage
 
 Credits
 -------
-Largly based on https://github.com/bernhardberger/reshade-varjo-redshift-fix shader for Varjo Aero by Bernhard Berger
+Largly based on https://github.com/bernhardberger/reshade-varjo-redshift-fix shader for Varjo Aero by Bernhard Berger  
 Special thanks to Matthieu Bucchianeri ([mbucchia](https://github.com/mbucchia)) for writing the initial HLSL pixel shader for his awesome [OpenXR-Toolkit](https://mbucchia.github.io/OpenXR-Toolkit/) project!
