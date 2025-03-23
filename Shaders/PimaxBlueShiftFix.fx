@@ -3,6 +3,7 @@
 // Varjo Chromatic Aberration ("RedShift Fix") Correction Shader 
 //
 // Copyright(c) 2023 Bernhard Berger
+// 2025 Acinveri - minor adaptations for Pimax Crystal headset
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this softwareand associated documentation files(the "Software"), to deal
@@ -32,21 +33,37 @@
 #include "ReShadeUI.fxh"
 
 uniform float offsetRed <
-    ui_category = "Varjo Redshift Fix";
+    ui_category = "Redshift Fix";
     ui_type = "slider";
     ui_label = "Red Offset";
     ui_tooltip = "Offset for the red color channel (use the same values as determined in RedShiftTester and OpenXR Toolkit)";
-    ui_min = -0.20; ui_max = 0.2 ;ui_step = 0.001;
- > = 0.085;
+    ui_min = -1; ui_max = 1 ;ui_step = 0.001;
+ > = 0.055;
 
 uniform float offsetBlue <
-    ui_category = "Varjo Redshift Fix";
+    ui_category = "Redshift Fix";
     ui_type = "slider";
     ui_label = "Blue Offset";
     ui_tooltip = "Offset for the blue color channel (use the same values as determined in RedShiftTester and OpenXR Toolkit)";
-    ui_min = -0.20; ui_max = 0.20;ui_step = 0.001;
- > = -0.115;
+    ui_min = -1; ui_max = 1; ui_step = 0.001;
+ > = -0.38;
 
+uniform float correctionOriginX <
+    ui_category = "Redshift Fix";
+    ui_type = "slider";
+    ui_label = "Correction Origin X";
+    ui_tooltip = "X coord";
+    ui_min = 0; ui_max = 1;ui_step = 0.001;
+ > = 0.22;
+ 
+ uniform float correctionOriginY <
+    ui_category = "Redshift Fix";
+    ui_type = "slider";
+    ui_label = "Correction Origin Y";
+    ui_tooltip = "Y coord";
+    ui_min = 0; ui_max = 1;ui_step = 0.001;
+ > = 0.52;
+ 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Correction Shader
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -61,11 +78,12 @@ sampler2D sourceSampler
 
 float4 chromaticAberrationCorrectionPS(float4 position : SV_POSITION, float2 texcoord : TEXCOORD0) : SV_Target {
     float3 color;
-    float2 correctionOrigin = float2(0.1565, 0.42); // Correction origin for left eye, 
+    //float2 correctionOrigin = float2(0.1565, 0.42); // Correction origin for left eye, 
 													// hardcoded for Varjo Aero, Varjo VR-3 and XR-3 (only Stereo Mode supported)
-
-        float redOffset = offsetRed/100 + 1.000;
-	float blueOffset = offsetBlue/100 + 1.000;
+													
+	float2 correctionOrigin = float2(correctionOriginX, correctionOriginY);
+    float blueOffset = offsetBlue/100 + 1.000;
+	float redOffset = offsetRed/100 + 1.000;
 	float greenOffset = 1;
 	
 	if (texcoord.x < 0.5) {
@@ -94,7 +112,7 @@ float4 chromaticAberrationCorrectionPS(float4 position : SV_POSITION, float2 tex
     return float4(color, 1.0);
 }
 
-technique ZZZ_VarjoRedshiftFix
+technique ZZZ_PimaxBlueShiftFix
 {
     pass ChromaticAberration
     {
